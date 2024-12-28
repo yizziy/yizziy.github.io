@@ -3,381 +3,334 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ich hab noch nie - Extended</title>
+  <title>Trinkolino</title>
 
-  <!-- Einfacher Inline-Stil -->
   <style>
-    * {
-      margin: 0; 
-      padding: 0; 
-      box-sizing: border-box;
-    }
-
+    /* Kurzer Inline-Stil */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 1rem;
-      background: #fff;
+      max-width: 600px; margin: 0 auto; padding: 1rem;
     }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 1rem;
-      color: #333;
-    }
-
-    .hidden {
-      display: none;
-    }
-
+    h1 { text-align: center; margin-bottom: 1rem; }
+    .hidden { display: none; }
     .player-name {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      width: 100%; padding: 0.75rem; margin-bottom: 0.5rem;
+      border: 1px solid #ccc; border-radius: 5px;
     }
-
     button {
-      background-color: #007aff;
-      color: #fff;
-      border: none;
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-right: 0.5rem;
-      margin-top: 0.5rem;
+      background-color: #007aff; color: #fff; border: none;
+      padding: 0.75rem 1rem; font-size: 1rem; border-radius: 5px;
+      cursor: pointer; margin-right: 0.5rem; margin-top: 0.5rem;
     }
-    button:hover {
-      background-color: #005bb5;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
-      color: #444;
-    }
-
+    button:hover { background-color: #005bb5; }
     .question-display {
-      min-height: 80px;
-      background-color: #f1f1f1;
-      padding: 1rem;
-      border-radius: 5px;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
+      min-height: 80px; background: #f1f1f1; padding: 1rem;
+      border-radius: 5px; margin-top: 1rem; margin-bottom: 1rem;
     }
-
-    .current-player-display {
-      font-style: italic;
-      color: #555;
-      margin-bottom: 0.5rem;
-    }
-
-    .mode-display, .type-display {
-      margin-bottom: 0.25rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-
-    .timer-container {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
+    .current-player-display { font-style: italic; color: #555; margin-bottom: 0.5rem; }
+    .mode-display, .type-display { font-size: 0.9rem; margin-bottom: 0.25rem; color: #666; }
+    .timer-container { display: flex; align-items: center; gap: 0.5rem; }
     .countdown {
-      background: #007aff;
-      color: #fff;
-      padding: 0.5rem 0.75rem;
-      border-radius: 5px;
-      font-weight: bold;
-      min-width: 40px;
-      text-align: center;
+      background: #007aff; color: #fff; padding: 0.5rem 0.75rem;
+      border-radius: 5px; font-weight: bold; min-width: 40px; text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <h1>Ich hab noch nie - Extended</h1>
+<h1>Trinkolino</h1>
 
-  <!-- SETUP-SECTION -->
-  <div id="setup-section">
-    <div class="section-title">Spieler-Einstellungen</div>
-    <div id="player-inputs">
-      <input type="text" placeholder="Name Spieler 1" class="player-name">
-      <input type="text" placeholder="Name Spieler 2" class="player-name">
-    </div>
+<!-- SETUP -->
+<div id="setup-section">
+  <h2>Spieler-Einstellungen</h2>
+  <div id="player-inputs">
+    <input type="text" placeholder="Name Spieler 1" class="player-name" />
+    <input type="text" placeholder="Name Spieler 2" class="player-name" />
+  </div>
+  <button id="add-player-btn">+ Spieler hinzufügen</button>
+  <br><br>
 
-    <button id="add-player-btn">+ Spieler hinzufügen</button>
-    <br><br>
+  <label>
+    <input type="checkbox" id="enable-random-challenges">
+    Frage/Aufgaben-Modus?
+  </label>
+  <br><br>
+  <button id="start-game-btn" disabled>Spiel starten (Daten laden ...)</button>
+</div>
 
-    <label>
-      <input type="checkbox" id="enable-random-challenges">
-      Frage/Aufgaben-Modus aktivieren? 
-      <br><small>(Wenn deaktiviert: Standard „Ich hab noch nie")</small>
-    </label>
-    <br><br>
+<!-- GAME -->
+<div id="game-section" class="hidden">
+  <div class="mode-display" id="mode-display"></div>
+  <div class="type-display" id="type-display"></div>
+  <div class="current-player-display" id="current-player-display"></div>
+  <div class="question-display" id="question-display"></div>
 
-    <button id="start-game-btn">Spiel starten</button>
+  <div class="timer-container hidden" id="timer-container">
+    <span>Noch Zeit: </span><div class="countdown" id="countdown">60</div>
   </div>
 
-  <!-- GAME-SECTION -->
-  <div id="game-section" class="hidden">
-    <div class="mode-display" id="mode-display"></div>
-    <div class="type-display" id="type-display"></div>
-    <div class="current-player-display" id="current-player-display"></div>
-    <div class="question-display" id="question-display">Frage wird angezeigt...</div>
+  <button id="next-question-btn">Nächste Frage</button>
+  <button id="reset-game-btn">Neues Spiel</button>
+</div>
 
-    <!-- Timer für Aufgaben -->
-    <div class="timer-container hidden" id="timer-container">
-      <span>Noch Zeit: </span>
-      <div class="countdown" id="countdown">60</div>
-    </div>
+<script>
+/************************************************************
+ * 1) GOOGLE-SHEETS-URLs (basierend auf deinen Angaben)
+ ************************************************************/
+const SHEET_URL_ICH_HAB_NOCH_NIE = "https://docs.google.com/spreadsheets/d/1-fmZWI4cx3ZtlGsuwHOiOSChSEtiylfKVtlYSm-bKA4/export?format=csv&gid=0";
+const SHEET_URL_SPEZIFISCHE_FRAGEN = "https://docs.google.com/spreadsheets/d/1-fmZWI4cx3ZtlGsuwHOiOSChSEtiylfKVtlYSm-bKA4/export?format=csv&gid=973647428";
+const SHEET_URL_AUFGABEN = "https://docs.google.com/spreadsheets/d/1-fmZWI4cx3ZtlGsuwHOiOSChSEtiylfKVtlYSm-bKA4/export?format=csv&gid=1801546799";
 
-    <button id="next-question-btn">Nächste Frage</button>
-    <button id="reset-game-btn">Neues Spiel</button>
-  </div>
+/************************************************************
+ * 2) ARRAYS, DIE WIR MIT DEN GESHEETETEN DATEN FÜLLEN
+ ************************************************************/
+let ichHabNochNieFragen = []; 
+let spezifischeFragen = [];
+let aufgaben = [];
 
-  <!-- Inline-JS -->
-  <script>
-    /*************************************************
-     * 1) Fragen-Pools
-     *************************************************/
-    // "Ich hab noch nie"-Fragen
-    const ichHabNochNieFragen = [
-      "Ich hab noch nie heimlich aus dem Kühlschrank genascht.",
-      "Ich hab noch nie beim Sport geschummelt.",
-      "Ich hab noch nie eine wichtige Deadline verpasst."
-    ];
+/************************************************************
+ * 3) CSV-PARSING HELFER: Wir gehen davon aus, dass jede Zeile
+ *    (Spalte A) eine Frage/Aufgabe enthält
+ ************************************************************/
+function parseCsvToArray(csvText) {
+  // Trenne Zeilen (bei \n)
+  const lines = csvText.split("\n");
+  // Jede Zeile -> trim() -> falls nicht leer
+  const array = lines
+    .map(line => line.trim())
+    .filter(line => line !== "");
+  return array;
+}
 
-    // Spezifische Fragen (Nur im Frage/Aufgaben-Modus)
-    const spezifischeFragen = [
-      "Was ist dein peinlichstes Erlebnis?",
-      "Welche geheime Fähigkeit hast du, die kaum jemand kennt?",
-      "Wovor hast du am meisten Angst?"
-    ];
+/************************************************************
+ * 4) DATEN VOM SERVER LADEN (Google Sheets)
+ ************************************************************/
+async function ladeAlleDaten() {
+  try {
+    // Ich hab noch nie
+    const res1 = await fetch(SHEET_URL_ICH_HAB_NOCH_NIE);
+    const csv1 = await res1.text();
+    ichHabNochNieFragen = parseCsvToArray(csv1);
 
-    // Aufgaben (Nur im Frage/Aufgaben-Modus) => inkl. Timer (1min)
-    const aufgaben = [
-      "Mache 10 Kniebeugen und singe dabei ein Lied deiner Wahl.",
-      "Erzähle einen peinlichen Witz.",
-      "Tanze 30 Sekunden zu einem zufälligen Lied (insgesamt 1 Minute Zeit)."
-    ];
+    // Spezifische Fragen
+    const res2 = await fetch(SHEET_URL_SPEZIFISCHE_FRAGEN);
+    const csv2 = await res2.text();
+    spezifischeFragen = parseCsvToArray(csv2);
 
-    /*************************************************
-     * 2) Globale Spielvariablen
-     *************************************************/
-    let alleSpieler = [];
-    let aktuelleSpielerIndex = 0;
-    let verwendeteFragen = [];
-    let enableRandomChallenges = false;
+    // Aufgaben
+    const res3 = await fetch(SHEET_URL_AUFGABEN);
+    const csv3 = await res3.text();
+    aufgaben = parseCsvToArray(csv3);
 
-    // Timer / Countdown
-    let countdownInterval = null;
-    let timeLeft = 60;
+    console.log("Sheets-Daten geladen!");
+  } catch (error) {
+    console.error("Fehler beim Laden der CSVs:", error);
+    alert("Fehler beim Laden der Daten. Bitte Freigabe prüfen oder Links anpassen!");
+  }
+}
 
-    // DOM-Elemente
-    const setupSection = document.getElementById("setup-section");
-    const gameSection = document.getElementById("game-section");
+/************************************************************
+ * 5) SPIEL-LOGIK
+ ************************************************************/
+let alleSpieler = [];
+let aktuelleSpielerIndex = 0;
+let verwendeteFragen = [];
+let enableRandomChallenges = false;
 
-    const addPlayerBtn = document.getElementById("add-player-btn");
-    const startGameBtn = document.getElementById("start-game-btn");
-    const nextQuestionBtn = document.getElementById("next-question-btn");
-    const resetGameBtn = document.getElementById("reset-game-btn");
-    const playerInputsContainer = document.getElementById("player-inputs");
-    const enableRandomChallengesCheckbox = document.getElementById("enable-random-challenges");
+// Timer
+let countdownInterval = null;
+let timeLeft = 60;
 
-    const questionDisplay = document.getElementById("question-display");
-    const currentPlayerDisplay = document.getElementById("current-player-display");
-    const modeDisplay = document.getElementById("mode-display");
-    const typeDisplay = document.getElementById("type-display");
-    const timerContainer = document.getElementById("timer-container");
-    const countdownEl = document.getElementById("countdown");
+// DOM-Elemente
+const setupSection = document.getElementById("setup-section");
+const gameSection = document.getElementById("game-section");
 
-    /*************************************************
-     * 3) Hilfsfunktionen
-     *************************************************/
-    // Mische ein Array
-    function mischeArray(array) {
-      return array.sort(() => Math.random() - 0.5);
-    }
+const addPlayerBtn = document.getElementById("add-player-btn");
+const startGameBtn = document.getElementById("start-game-btn");
+const nextQuestionBtn = document.getElementById("next-question-btn");
+const resetGameBtn = document.getElementById("reset-game-btn");
 
-    // Starte 1-Minuten-Timer (nur bei Aufgaben)
-    function starteTimer() {
-      // Erstmal stoppen, falls ein Timer noch läuft
+const questionDisplay = document.getElementById("question-display");
+const currentPlayerDisplay = document.getElementById("current-player-display");
+const modeDisplay = document.getElementById("mode-display");
+const typeDisplay = document.getElementById("type-display");
+const timerContainer = document.getElementById("timer-container");
+const countdownEl = document.getElementById("countdown");
+
+const enableRandomChallengesCheckbox = document.getElementById("enable-random-challenges");
+const playerInputsContainer = document.getElementById("player-inputs");
+
+// Array mischen
+function mischeArray(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+// Timer starten (1 Minute)
+function starteTimer() {
+  stoppeTimer();
+  timeLeft = 60;
+  countdownEl.textContent = timeLeft;
+  timerContainer.classList.remove("hidden");
+
+  countdownInterval = setInterval(() => {
+    timeLeft--;
+    countdownEl.textContent = timeLeft;
+    if (timeLeft <= 0) {
       stoppeTimer();
-
-      timeLeft = 60;
-      countdownEl.textContent = timeLeft;
-      timerContainer.classList.remove("hidden");
-
-      countdownInterval = setInterval(() => {
-        timeLeft--;
-        countdownEl.textContent = timeLeft;
-        if (timeLeft <= 0) {
-          stoppeTimer();
-          countdownEl.textContent = "Zeit abgelaufen!";
-        }
-      }, 1000);
+      countdownEl.textContent = "Zeit abgelaufen!";
     }
+  }, 1000);
+}
 
-    // Stoppe Timer und blende ihn aus
-    function stoppeTimer() {
-      if (countdownInterval) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
-      }
-      timerContainer.classList.add("hidden");
-    }
+// Timer stoppen
+function stoppeTimer() {
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
+    countdownInterval = null;
+  }
+  timerContainer.classList.add("hidden");
+}
 
-    /*************************************************
-     * 4) Logik zum Auswählen der nächsten Frage/Aufgabe
-     *************************************************/
-    function holeNaechsteFrage() {
-      // Falls wir NICHT im Aufgaben/Fragen-Modus sind
-      if (!enableRandomChallenges) {
-        // -> Nur "Ich hab noch nie"-Fragen
-        modeDisplay.textContent = "Aktueller Modus: Ich hab noch nie";
+// Nächsten Eintrag bestimmen
+function holeNaechsteFrage() {
+  if (!enableRandomChallenges) {
+    // -> Ich hab noch nie
+    modeDisplay.textContent = "Aktueller Modus: Ich hab noch nie";
 
-        // Filtere genutzte raus
-        let pool = ichHabNochNieFragen.filter(fr => !verwendeteFragen.includes(fr));
-
-        if (pool.length === 0) {
-          verwendeteFragen = [];
-          pool = [...ichHabNochNieFragen];
-          alert("Alle 'Ich hab noch nie'-Fragen wurden gestellt. Wir beginnen von vorne!");
-        }
-
-        mischeArray(pool);
-        const frage = pool[0];
-        verwendeteFragen.push(frage);
-
-        typeDisplay.textContent = "Aktueller Typ: Frage";
-
-        return {
-          text: frage,
-          isAufgabe: false
-        };
-      } 
-      else {
-        // -> Fragen/Aufgaben-Modus
-        modeDisplay.textContent = "Aktueller Modus: Frage/Aufgabe";
-
-        // Kombinierter Pool: spezifischeFragen + aufgaben
-        let pool = [...spezifischeFragen, ...aufgaben];
-
-        // Schon verwendete Einträge rausfiltern
-        pool = pool.filter(e => !verwendeteFragen.includes(e));
-
-        if (pool.length === 0) {
-          verwendeteFragen = [];
-          pool = [...spezifischeFragen, ...aufgaben];
-          alert("Alle Fragen/Aufgaben wurden gestellt. Wir beginnen von vorne!");
-        }
-
-        mischeArray(pool);
-        const eintrag = pool[0];
-        verwendeteFragen.push(eintrag);
-
-        // Prüfen, ob es eine Aufgabe ist oder eine Frage
-        const isAufgabe = aufgaben.includes(eintrag);
-        typeDisplay.textContent = isAufgabe ? "Aktueller Typ: Aufgabe" : "Aktueller Typ: Frage";
-
-        return {
-          text: eintrag,
-          isAufgabe
-        };
-      }
-    }
-
-    /*************************************************
-     * 5) Anzeige aktualisieren
-     *************************************************/
-    function zeigeFrage() {
-      // Nächste Frage/Eintrag holen
-      const { text, isAufgabe } = holeNaechsteFrage();
-
-      // Welcher Spieler ist dran?
-      const currentPlayer = alleSpieler[aktuelleSpielerIndex];
-      currentPlayerDisplay.textContent = `Aktueller Spieler: ${currentPlayer}`;
-
-      // Platzhalter: Spielername prefixen
-      // Beispiel: "Max, Ich hab noch nie..." oder "Sarah, erzähle einen peinlichen Witz."
-      questionDisplay.textContent = `${currentPlayer}, ${text}`;
-
-      // Timer-Handling
-      if (isAufgabe) {
-        // Aufgabe: 1 Minute Zeit
-        starteTimer();
-      } else {
-        // Frage: kein Timer
-        stoppeTimer();
-      }
-    }
-
-    // Nächster Spieler
-    function naechsterSpieler() {
-      aktuelleSpielerIndex++;
-      if (aktuelleSpielerIndex >= alleSpieler.length) {
-        aktuelleSpielerIndex = 0;
-      }
-    }
-
-    /*************************************************
-     * 6) Event-Listener
-     *************************************************/
-    // +Spieler hinzufügen
-    addPlayerBtn.addEventListener("click", () => {
-      const inputCount = playerInputsContainer.querySelectorAll("input").length;
-      const newInput = document.createElement("input");
-      newInput.type = "text";
-      newInput.placeholder = "Name Spieler " + (inputCount + 1);
-      newInput.className = "player-name";
-      playerInputsContainer.appendChild(newInput);
-    });
-
-    // Spiel starten
-    startGameBtn.addEventListener("click", () => {
-      // Spielernamen einsammeln
-      alleSpieler = Array.from(document.querySelectorAll(".player-name"))
-        .map(inp => inp.value.trim())
-        .filter(name => name !== "");
-
-      if (alleSpieler.length < 2) {
-        alert("Bitte mindestens zwei Spieler eintragen.");
-        return;
-      }
-
-      enableRandomChallenges = enableRandomChallengesCheckbox.checked;
-      aktuelleSpielerIndex = 0;
+    let pool = ichHabNochNieFragen.filter(fr => !verwendeteFragen.includes(fr));
+    if (pool.length === 0) {
       verwendeteFragen = [];
+      pool = [...ichHabNochNieFragen];
+      alert("Alle 'Ich hab noch nie'-Fragen wurden gestellt. Wir beginnen von vorne!");
+    }
 
-      setupSection.classList.add("hidden");
-      gameSection.classList.remove("hidden");
+    mischeArray(pool);
+    const frage = pool[0];
+    verwendeteFragen.push(frage);
 
-      // Erste Frage
-      zeigeFrage();
-    });
+    typeDisplay.textContent = "Aktueller Typ: Frage";
+    return { text: frage, isAufgabe: false };
+  } else {
+    // -> Fragen/Aufgaben-Modus
+    modeDisplay.textContent = "Aktueller Modus: Frage/Aufgabe";
 
-    // Nächste Frage
-    nextQuestionBtn.addEventListener("click", () => {
-      naechsterSpieler();
-      zeigeFrage();
-    });
+    // Kombiniere spezifischeFragen + aufgaben
+    let pool = [...spezifischeFragen, ...aufgaben];
+    pool = pool.filter(e => !verwendeteFragen.includes(e));
 
-    // Neues Spiel
-    resetGameBtn.addEventListener("click", () => {
-      stoppeTimer();
-      setupSection.classList.remove("hidden");
-      gameSection.classList.add("hidden");
+    if (pool.length === 0) {
       verwendeteFragen = [];
-      // Optional: Namen beibehalten oder Eingabefelder leeren – nach Bedarf anpassen
-    });
-  </script>
+      pool = [...spezifischeFragen, ...aufgaben];
+      alert("Alle Fragen/Aufgaben wurden gestellt. Wir beginnen von vorne!");
+    }
+
+    mischeArray(pool);
+    const eintrag = pool[0];
+    verwendeteFragen.push(eintrag);
+
+    const isAufgabe = aufgaben.includes(eintrag);
+    typeDisplay.textContent = isAufgabe ? "Aktueller Typ: Aufgabe" : "Aktueller Typ: Frage";
+
+    return { text: eintrag, isAufgabe };
+  }
+}
+
+function zeigeFrage() {
+  const { text, isAufgabe } = holeNaechsteFrage();
+  const currentPlayer = alleSpieler[aktuelleSpielerIndex];
+  currentPlayerDisplay.textContent = `Aktueller Spieler: ${currentPlayer}`;
+
+  // Spielername prefixen: "Max, [Frage/Aufgabe]"
+  questionDisplay.textContent = `${currentPlayer}, ${text}`;
+
+  if (isAufgabe) {
+    starteTimer();
+  } else {
+    stoppeTimer();
+  }
+}
+
+function naechsterSpieler() {
+  aktuelleSpielerIndex++;
+  if (aktuelleSpielerIndex >= alleSpieler.length) {
+    aktuelleSpielerIndex = 0;
+  }
+}
+
+/************************************************************
+ * 6) EVENT-LISTENER
+ ************************************************************/
+addPlayerBtn.addEventListener("click", () => {
+  const inputCount = playerInputsContainer.querySelectorAll("input").length;
+  const newInput = document.createElement("input");
+  newInput.type = "text";
+  newInput.placeholder = "Name Spieler " + (inputCount + 1);
+  newInput.classList.add("player-name");
+  playerInputsContainer.appendChild(newInput);
+});
+
+// Spiel starten
+startGameBtn.addEventListener("click", () => {
+  alleSpieler = Array.from(document.querySelectorAll(".player-name"))
+    .map(inp => inp.value.trim())
+    .filter(name => name !== "");
+
+  if (alleSpieler.length < 2) {
+    alert("Bitte mindestens zwei Spieler eintragen.");
+    return;
+  }
+
+  enableRandomChallenges = enableRandomChallengesCheckbox.checked;
+  aktuelleSpielerIndex = 0;
+  verwendeteFragen = [];
+
+  setupSection.classList.add("hidden");
+  gameSection.classList.remove("hidden");
+
+  zeigeFrage();
+});
+
+// Nächste Frage
+nextQuestionBtn.addEventListener("click", () => {
+  naechsterSpieler();
+  zeigeFrage();
+});
+
+// Neues Spiel
+resetGameBtn.addEventListener("click", () => {
+  stoppeTimer();
+  setupSection.classList.remove("hidden");
+  gameSection.classList.add("hidden");
+  verwendeteFragen = [];
+});
+
+/************************************************************
+ * 7) SEITEN-START:
+ *    - Daten laden aus Google Sheets
+ *    - Dann "Spiel starten"-Button aktivieren
+ ************************************************************/
+window.addEventListener("DOMContentLoaded", async () => {
+  startGameBtn.disabled = true;
+  
+  // Versuche, alle CSVs zu laden
+  await ladeAlleDaten();
+  
+  // Falls Sheets leer sind, nutze ggf. Fallback-Werte:
+  if (ichHabNochNieFragen.length === 0) {
+    ichHabNochNieFragen = ["(Beispiel) Ich hab noch nie auf dem Tisch getanzt."];
+  }
+  if (spezifischeFragen.length === 0) {
+    spezifischeFragen = ["(Beispiel) Was war dein peinlichstes Erlebnis?"];
+  }
+  if (aufgaben.length === 0) {
+    aufgaben = ["(Beispiel) Erzähl einen schlechten Witz!"];
+  }
+
+  // Button freigeben
+  startGameBtn.disabled = false;
+});
+</script>
+
 </body>
 </html>
