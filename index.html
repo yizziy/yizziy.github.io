@@ -210,7 +210,7 @@ function holeNaechsteFrage() {
     verwendeteFragen.push(frage);
 
     typeDisplay.textContent = "Aktueller Typ: Frage";
-    return { text: frage, isAufgabe: false };
+    return { text: frage, isAufgabe: false , rnd:true};
   } else {
     // -> Fragen/Aufgaben-Modus
     modeDisplay.textContent = "Aktueller Modus: Frage/Aufgabe";
@@ -232,21 +232,23 @@ function holeNaechsteFrage() {
     const isAufgabe = aufgaben.includes(eintrag);
     typeDisplay.textContent = isAufgabe ? "Aktueller Typ: Aufgabe" : "Aktueller Typ: Frage";
 
-    return { text: eintrag, isAufgabe };
+    return { text: eintrag, isAufgabe ,rnd:false};
   }
 }
 
 function zeigeFrage() {
-  const { text, isAufgabe } = holeNaechsteFrage();
+  const { text, isAufgabe,rnd } = holeNaechsteFrage();
   const currentPlayer = alleSpieler[aktuelleSpielerIndex];
   currentPlayerDisplay.textContent = `Aktueller Spieler: ${currentPlayer}`;
 
   // Spielername prefixen: "Max, [Frage/Aufgabe]"
-  questionDisplay.textContent = `${currentPlayer}, ${text}`;
+  
 
-  if (isAufgabe) {
+  if (isAufgabe||!rnd) {
+questionDisplay.textContent = `${currentPlayer}, ${text}`;
     starteTimer();
   } else {
+  questionDisplay.textContent = `${text}`;
     stoppeTimer();
   }
 }
